@@ -11,6 +11,7 @@ import OtpTimer from "@/component/timer-comp/timer-comp";
 import { connectSocket, disconnectSocket } from "@/service/socket";
 import { insertOtp } from "@/redux/feature/session/sessionSlice";
 import { enqueueSnackbar } from "notistack";
+import PinIcon from '@mui/icons-material/Pin';
 
 export default function Home() {
   const { user, loading, token } = useSelector((state: RootState) => state.authReducer);
@@ -87,16 +88,17 @@ export default function Home() {
             <Typography variant="body2">No active sessions found.</Typography>
           )}
         </Box>
+
+        <Button onClick={handleOtpModalOpen} className={styles.otpbutton}>
+          OTP <PinIcon />
+        </Button>
       </Card>
-      <Button onClick={handleOtpModalOpen}>
-        Open OTPs
-      </Button>
 
       <Modal open={OtpModalClose} onClose={handleOtpModalClose} className={styles.modal}>
         <Box className={styles.modalWrapper}>
           {otps && otps.length > 0 ? (
             otps.map((otp) => (
-              <Box key={otp.uuid} sx={{ mb: 2, borderBottom: '1px solid #eee', pb: 1 }}>
+              <Box key={otp.uuid} sx={{ mb: 2, borderBottom: '1px solid #343', pb: 1 }}>
                 {/* <Typography><strong>UUID:</strong> {otp.uuid}</Typography> */}
                 <Typography><strong>OTP:</strong> {otp.otp}</Typography>
                 <Typography><strong>Email:</strong> {otp.email}</Typography>
