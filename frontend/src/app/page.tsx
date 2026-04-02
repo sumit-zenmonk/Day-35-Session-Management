@@ -26,7 +26,7 @@ export default function Home() {
       }
       catch (err: any) {
         enqueueSnackbar(err, { variant: "error" })
-        console.log(err);
+        console.error(err);
       }
     }
 

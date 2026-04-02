@@ -1,4 +1,4 @@
-name: linkedin
+name: session
 
 services:
   database:
