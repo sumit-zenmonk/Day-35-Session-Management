@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Req } from "@nestjs/common";
 import { SessionService } from "./session.service";
 import type { Request } from "express";
 import { CreateOtpDto } from "./dto/otp.dto";
@@ -26,5 +26,10 @@ export class SessionController {
     @Post()
     async createSessionUsingOtp(@Body() body: CreateSessionDto, @Req() req: Request) {
         return await this.sessionService.createSessionUsingOtp(body, req);
+    }
+
+    @Delete('/:deviceId')
+    async deleteSession(@Param('deviceId') deviceId: string, @Req() req: Request) {
+        return await this.sessionService.deleteSession(deviceId, req.user);
     }
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { createSlice } from "@reduxjs/toolkit"
-import { createSession, generateOtpUsigEmail, getOtpList, getSession } from "./sessionAction";
+import { createSession, deleteSession, generateOtpUsigEmail, getOtpList, getSession } from "./sessionAction";
 
 const initialState: SessionState = {
     sessions: [],
@@ -57,6 +57,9 @@ const authSlice = createSlice({
             .addCase(generateOtpUsigEmail.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload as string;
+            })
+            .addCase(deleteSession.fulfilled, (state, action) => {
+                state.sessions = state.sessions.filter(session => session.deviceId !== action.payload);
             })
     }
 })

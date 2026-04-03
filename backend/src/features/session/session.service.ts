@@ -110,4 +110,20 @@ export class SessionService {
             }
         };
     }
+
+    async deleteSession(deviceId: string, user: UserEntity) {
+        const session = await this.sessionRepo.findSessionByDeviceId(deviceId);
+        if (!session) {
+            throw new BadRequestException("Session not found or already expired.");
+        }
+
+        if (session.userUuid !== user.uuid) {
+            throw new BadRequestException("Unauthorized to delete this session.");
+        }
+
+        await this.sessionRepo.deleteSessionByDeviceId(deviceId);
+        return {
+            message: "Session deleted successfully"
+        };
+    }
 }

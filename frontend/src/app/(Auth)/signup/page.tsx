@@ -36,7 +36,7 @@ export default function SignupForm() {
             router.replace("/")
         } catch (error: any) {
             enqueueSnackbar(error, { variant: "error" })
-            console.error(error)
+            console.log(error)
         }
     }
 

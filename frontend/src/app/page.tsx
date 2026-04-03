@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useState, useCallback } from "react";
-import { Avatar, Box, Button, Card, Modal, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, Modal, Typography, IconButton } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { getOtpList, getSession } from "@/redux/feature/session/sessionAction";
+import { deleteSession, getOtpList, getSession } from "@/redux/feature/session/sessionAction";
 import { useAppDispatch } from "@/redux/hooks.ts";
 import styles from "./home.module.css";
 import OtpTimer from "@/component/timer-comp/timer-comp";
@@ -12,6 +12,7 @@ import { connectSocket, disconnectSocket } from "@/service/socket";
 import { insertOtp } from "@/redux/feature/session/sessionSlice";
 import { enqueueSnackbar } from "notistack";
 import PinIcon from '@mui/icons-material/Pin';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function Home() {
   const { user, loading, token } = useSelector((state: RootState) => state.authReducer);
@@ -27,12 +28,21 @@ export default function Home() {
       }
       catch (err: any) {
         enqueueSnackbar(err, { variant: "error" })
-        console.error(err);
+        console.log(err);
       }
     }
 
     sessionOtp();
   }, [dispatch]);
+
+  const handleDeleteSession = async (deviceId: string) => {
+    try {
+      await dispatch(deleteSession(deviceId)).unwrap();
+      enqueueSnackbar("Session deleted successfully", { variant: "success" });
+    } catch (err: any) {
+      enqueueSnackbar(err, { variant: "error" });
+    }
+  };
 
   if (loading) {
     return <Box className={styles.container}>Loading...</Box>;
@@ -78,10 +88,19 @@ export default function Home() {
           {sessions.length > 0 ? (
             sessions.map((session) => (
               <Card key={session.uuid} className={styles.sessionCard}>
-                <Typography variant="body2">Device: {session.deviceType}</Typography>
-                <Typography variant="body2">IP: {session.ip}</Typography>
-                <Typography variant="body2">Created At: {new Date(session.created_at).toLocaleString()}</Typography>
-                <Typography variant="body2">Expires At: {new Date(session.expiresAt).toLocaleString()}</Typography>
+                <Box className={styles.sessionCardContent}>
+                  <Typography variant="body2">Device: {session.deviceType}</Typography>
+                  <Typography variant="body2">IP: {session.ip}</Typography>
+                  <Typography variant="body2">Created At: {new Date(session.created_at).toLocaleString()}</Typography>
+                  <Typography variant="body2">Expires At: {new Date(session.expiresAt).toLocaleString()}</Typography>
+                </Box>
+                <IconButton
+                  onClick={() => handleDeleteSession(session.deviceId)}
+                  className={styles.deleteBtn}
+                  aria-label="delete session"
+                >
+                  <DeleteIcon />
+                </IconButton>
               </Card>
             ))
           ) : (

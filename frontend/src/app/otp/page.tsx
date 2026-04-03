@@ -36,7 +36,7 @@ export default function OtpPage() {
                 })
                 .catch((error) => {
                     enqueueSnackbar(error || "Error generating OTP", { variant: "error" });
-                    console.error('Error generating OTP:', error);
+                    console.log('Error generating OTP:', error);
                 });
         }
     };
@@ -49,7 +49,7 @@ export default function OtpPage() {
                 router.replace('/');
             })
             .catch((error) => {
-                console.error('Session creation failed:', error);
+                console.log('Session creation failed:', error);
                 enqueueSnackbar(error, { variant: "error" });
             });
     }

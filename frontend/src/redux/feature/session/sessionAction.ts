@@ -37,6 +37,37 @@ export const getSession = createAsyncThunk<
     }
 )
 
+export const deleteSession = createAsyncThunk<
+    string,
+    string,
+    { state: RootState }
+>(
+    "auth/deleteSession",
+    async (deviceIdToDelete, { getState, rejectWithValue }) => {
+        try {
+            const token = getState().authReducer.token || "";
+            const deviceId = getState().authReducer.deviceId || "";
+
+            const res = await fetch(`${API_URL}/session/${deviceIdToDelete}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": token,
+                    "deviceId": deviceId
+                },
+                credentials: "include",
+            });
+
+            const result = await res.json();
+            if (!res.ok) throw new Error(result.message);
+
+            return deviceIdToDelete;
+        } catch (error: any) {
+            return rejectWithValue(error.message);
+        }
+    }
+);
+
 export const getOtpList = createAsyncThunk<
     OtpType[],
     void,
