@@ -15,14 +15,18 @@ import {
     Card,
     TextField,
     Typography,
-    Divider
+    Divider,
+    Modal
 } from "@mui/material"
 import { loginUser } from "@/redux/feature/Auth/authAction"
 import { enqueueSnackbar } from "notistack"
+import { useState } from "react"
+import OtpComp from "@/component/otp-comp/otp-comp"
 
 export default function LoginForm() {
     const dispatch = useDispatch<AppDispatch>()
     const router = useRouter()
+    const [OtpModalClose, setOtpModalClose] = useState<boolean>(false);
 
     const {
         register,
@@ -39,8 +43,14 @@ export default function LoginForm() {
         } catch (error: any) {
             enqueueSnackbar(error, { variant: "error" })
             console.log(error)
+            if (error = 'Too many devices logged in') {
+                handleOtpModalOpen();
+            }
         }
     }
+
+    const handleOtpModalOpen = () => setOtpModalClose(true);
+    const handleOtpModalClose = () => setOtpModalClose(false);
 
     return (
         <Box className={styles.container}>
@@ -94,15 +104,13 @@ export default function LoginForm() {
                 >
                     Create New Account?
                 </Button>
-
-                <Button
-                    variant="text"
-                    className={styles.button}
-                    onClick={() => router.replace("/otp")}
-                >
-                    Request Session Otp
-                </Button>
             </Card>
+
+            <Modal open={OtpModalClose} onClose={handleOtpModalClose} className={styles.modal}>
+                <Box className={styles.modalWrapper}>
+                    <OtpComp />
+                </Box>
+            </Modal>
         </Box>
     )
 }

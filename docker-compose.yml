@@ -3,7 +3,7 @@ name: session
 services:
   database:
     image: postgres:16
-    container_name: postgres_db
+    container_name: session_management_db
     restart: always
     env_file: ./backend/.env
     ports:
@@ -16,7 +16,7 @@ services:
       context: ./backend
       dockerfile: dockerfile
     ports:
-      - "9000:9000"
+      - "9001:9000"
     depends_on:
       - database
     command: sh -c "npm run build && npm run migration:run && npm run seed && npm run start:dev"
@@ -27,7 +27,7 @@ services:
       context: ./frontend
       dockerfile: dockerfile
     ports:
-      - "3000:3000"
+      - "3001:3000"
     command: npm run dev
     depends_on:
       - backend

@@ -14,7 +14,7 @@ import { useRouter } from 'next/navigation'
 import { RootState } from '@/redux/store'
 import OtpTimer from '@/component/timer-comp/timer-comp'
 
-export default function OtpPage() {
+export default function OtpComp() {
     const [otpSent, setOtpSent] = useState(false);
     const [email, setEmail] = useState("");
     const { control, handleSubmit, formState: { errors }, setValue } = useForm({
@@ -45,7 +45,7 @@ export default function OtpPage() {
         dispatch(createSession({ email: data.email, otp: parseInt(data.otp) }))
             .unwrap()
             .then(() => {
-                enqueueSnackbar('OTP Verified & Session Created');
+                enqueueSnackbar('OTP Verified & Session Created', { variant: "info" });
                 router.replace('/');
             })
             .catch((error) => {
@@ -87,14 +87,13 @@ export default function OtpPage() {
             <Button
                 type="button"
                 variant="contained"
-                sx={{ mt: 2 }}
                 disabled={!email || !!errors.email}
                 onClick={() => handleOtpGeneration(email)}
             >
                 Send OTP
             </Button>
 
-            {otpSent ? (
+            {otpSent || expiresAt ? (
                 <Controller
                     name="otp"
                     control={control}
@@ -103,7 +102,7 @@ export default function OtpPage() {
                         validate: (value) => value.length === 6 || "OTP must be 6 digits"
                     }}
                     render={({ field, fieldState }) => (
-                        <Box sx={{ mt: 2 }}>
+                        <Box >
                             <MuiOtpInput sx={{ gap: 1 }} {...field} length={6} />
                             {fieldState.invalid && (
                                 <FormHelperText error>{fieldState?.error?.message}</FormHelperText>
@@ -120,7 +119,6 @@ export default function OtpPage() {
             <Button
                 type="submit"
                 variant="contained"
-                sx={{ mt: 2 }}
                 disabled={!otpSent}
             >
                 Submit
